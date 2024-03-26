@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
@@ -10,7 +11,7 @@
 
 <meta name="author" content="Maxine Cruz" />
 
-<meta name="date" content="2024-03-21" />
+<meta name="date" content="2024-03-26" />
 
 <title>Section 1: Acquiring Occurrence Data</title>
 
@@ -274,7 +275,36 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ffcfaf; } code span.an { color: #7f9f7f; font-weight: bold; } code span.at { } code span.bn { color: #dca3a3; } code span.bu { } code span.cf { color: #f0dfaf; } code span.ch { color: #dca3a3; } code span.cn { color: #dca3a3; font-weight: bold; } code span.co { color: #7f9f7f; } code span.cv { color: #7f9f7f; font-weight: bold; } code span.do { color: #7f9f7f; } code span.dt { color: #dfdfbf; } code span.dv { color: #dcdccc; } code span.er { color: #c3bf9f; } code span.ex { } code span.fl { color: #c0bed1; } code span.fu { color: #efef8f; } code span.im { } code span.in { color: #7f9f7f; font-weight: bold; } code span.kw { color: #f0dfaf; } code span.op { color: #f0efd0; } code span.ot { color: #efef8f; } code span.pp { color: #ffcfaf; font-weight: bold; } code span.sc { color: #dca3a3; } code span.ss { color: #cc9393; } code span.st { color: #cc9393; } code span.va { } code span.vs { color: #cc9393; } code span.wa { color: #7f9f7f; font-weight: bold; } </style>
+code span.al { color: #ffcfaf; } 
+code span.an { color: #7f9f7f; font-weight: bold; } 
+code span.at { } 
+code span.bn { color: #dca3a3; } 
+code span.bu { } 
+code span.cf { color: #f0dfaf; } 
+code span.ch { color: #dca3a3; } 
+code span.cn { color: #dca3a3; font-weight: bold; } 
+code span.co { color: #7f9f7f; } 
+code span.cv { color: #7f9f7f; font-weight: bold; } 
+code span.do { color: #7f9f7f; } 
+code span.dt { color: #dfdfbf; } 
+code span.dv { color: #dcdccc; } 
+code span.er { color: #c3bf9f; } 
+code span.ex { } 
+code span.fl { color: #c0bed1; } 
+code span.fu { color: #efef8f; } 
+code span.im { } 
+code span.in { color: #7f9f7f; font-weight: bold; } 
+code span.kw { color: #f0dfaf; } 
+code span.op { color: #f0efd0; } 
+code span.ot { color: #efef8f; } 
+code span.pp { color: #ffcfaf; font-weight: bold; } 
+code span.sc { color: #dca3a3; } 
+code span.ss { color: #cc9393; } 
+code span.st { color: #cc9393; } 
+code span.va { } 
+code span.vs { color: #cc9393; } 
+code span.wa { color: #7f9f7f; font-weight: bold; } 
+</style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
 (function() {
@@ -405,7 +435,7 @@ display: none;
 
 <h1 class="title toc-ignore">Section 1: Acquiring Occurrence Data</h1>
 <h4 class="author">Maxine Cruz</h4>
-<h4 class="date">21 March 2024</h4>
+<h4 class="date">26 March 2024</h4>
 
 </div>
 
@@ -627,8 +657,15 @@ newly downloaded moth data in our R Environment in addition to placing a
 .zip version of that download in the data folder. To unzip and save it
 as a .csv, we will run the following line:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Save our data as a .csv (raw_data.csv) in the data folder (data/)</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">write.csv</span>(data, <span class="st">&quot;data/raw_data.csv&quot;</span>)</span></code></pre></div>
-<p>Now that we have our raw data, let us clean it up a bit!</p>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">write.csv</span>(data, <span class="st">&quot;data/raw_data.csv&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>          <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Note that the argument <code>row.names = FALSE</code> prevents the
+addition of a column that numbers the rows. Omitting this argument will
+add a column called <code>X</code> that lists the row number, but this
+is usually unnecessary since R provides a numbering system that is
+outside the original data frame.</p>
+<p>In any case, now that we have our raw data let us clean it up a
+bit!</p>
 <hr />
 </div>
 </div>
@@ -659,12 +696,12 @@ and call it <code>data</code>:</p>
 <p>At the moment, we have a data set that looks like this (only showing
 first six columns since there are 224, and all of them will not fit in
 one line):</p>
-<pre><code>##   X     gbifID accessRights bibliographicCitation language      license
-## 1 1 4525319866                                             CC_BY_NC_4_0
-## 2 2 4525244919                                             CC_BY_NC_4_0
-## 3 3 4525162078                                             CC_BY_NC_4_0
-## 4 4 4522725369                                             CC_BY_NC_4_0
-## 5 5 4522605014                                             CC_BY_NC_4_0</code></pre>
+<pre><code>##       gbifID accessRights bibliographicCitation language      license
+## 1 4525319866                                             CC_BY_NC_4_0
+## 2 4525244919                                             CC_BY_NC_4_0
+## 3 4525162078                                             CC_BY_NC_4_0
+## 4 4522725369                                             CC_BY_NC_4_0
+## 5 4522605014                                             CC_BY_NC_4_0</code></pre>
 <p>Not very useful or visually appealing, is it? We will have this
 cleaned up by the end of this section.</p>
 </div>
@@ -748,7 +785,7 @@ our data better, we will reduce the column number, rename some, and
 rearrange the observations to show from earliest date to the latest:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Reduce columns to what is / might be necessary for analyses / figures</span></span>
 <span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>cleaned_data <span class="ot">&lt;-</span> cleaned_data <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">68</span>, <span class="dv">69</span>, <span class="dv">70</span>, <span class="dv">99</span>, <span class="dv">100</span>, <span class="dv">203</span>, <span class="dv">202</span>, <span class="dv">158</span>, <span class="dv">86</span>, <span class="dv">87</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">67</span>, <span class="dv">68</span>, <span class="dv">69</span>, <span class="dv">98</span>, <span class="dv">99</span>, <span class="dv">202</span>, <span class="dv">201</span>, <span class="dv">157</span>, <span class="dv">85</span>, <span class="dv">86</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">latitude =</span> decimalLatitude,</span>
 <span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>         <span class="at">longitude =</span> decimalLongitude) <span class="sc">%&gt;%</span></span>
 <span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="fu">arrange</span>(year, month, day)</span>
@@ -761,24 +798,24 @@ correspond to:</p>
 <table>
 <tbody>
 <tr class="odd">
-<td>68 = year</td>
-<td>99 = decimalLatitude</td>
+<td>67 = year</td>
+<td>98 = decimalLatitude</td>
 </tr>
 <tr class="even">
-<td>69 = month</td>
-<td>100 = decimalLongitude</td>
+<td>68 = month</td>
+<td>99 = decimalLongitude</td>
 </tr>
 <tr class="odd">
-<td>70 = day</td>
-<td>158 = kingdom</td>
+<td>79 = day</td>
+<td>157 = kingdom</td>
 </tr>
 <tr class="even">
-<td>86 = countryCode</td>
-<td>202 = speciesKey</td>
+<td>85 = countryCode</td>
+<td>201 = speciesKey</td>
 </tr>
 <tr class="odd">
-<td>87 = stateProvince</td>
-<td>203 = species</td>
+<td>86 = stateProvince</td>
+<td>202 = species</td>
 </tr>
 </tbody>
 </table>
@@ -796,7 +833,8 @@ of this section (last two columns omitted so the table can fit):</p>
 <p>I think we are done preparing our data for mapping and modeling, let
 us save the cleaned version as:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Save our data as a .csv (cleaned_data.csv) in the data folder (data/)</span></span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">write.csv</span>(data, <span class="st">&quot;data/cleaned_data.csv&quot;</span>)</span></code></pre></div>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">write.csv</span>(cleaned_data, <span class="st">&quot;data/cleaned_data.csv&quot;</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>          <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>Great! Now our data is ready for analysis and visualizations. The
 next section in this tutorial will show you how to plot these and create
 an occurrence map.</p>

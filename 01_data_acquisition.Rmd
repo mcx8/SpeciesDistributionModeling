@@ -3,6 +3,7 @@ title: 'Section 1: Acquiring Occurrence Data'
 author: "Maxine Cruz"
 date: "`r format(Sys.time(),'%d %B %Y')`"
 output:
+  pdf_document: default
   html_document:
     theme: readable
     highlight: zenburn
@@ -197,10 +198,13 @@ You may notice that we are also storing the data in an object called `data` to t
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 # Save our data as a .csv (raw_data.csv) in the data folder (data/)
-write.csv(data, "data/raw_data.csv")
+write.csv(data, "data/raw_data.csv",
+          row.names = FALSE)
 ```
 
-Now that we have our raw data, let us clean it up a bit!
+Note that the argument `row.names = FALSE` prevents the addition of a column that numbers the rows. Omitting this argument will add a column called `X` that lists the row number, but this is usually unnecessary since R provides a numbering system that is outside the original data frame.
+
+In any case, now that we have our raw data let us clean it up a bit!
 
 ------------------------------------------------------------------------
 
@@ -225,7 +229,7 @@ At the moment, we have a data set that looks like this (only showing first six c
 
 ```{r, echo=FALSE}
 # View first few rows
-head(data[,1:6], 5)
+head(data[,1:5], 5)
 ```
 
 Not very useful or visually appealing, is it? We will have this cleaned up by the end of this section.
@@ -285,7 +289,7 @@ The table of data we printed earlier showed that there was a number of columns t
 ```{r, results='hide', message=FALSE, warning=FALSE}
 # Reduce columns to what is / might be necessary for analyses / figures
 cleaned_data <- cleaned_data %>%
-  select(68, 69, 70, 99, 100, 203, 202, 158, 86, 87) %>%
+  select(67, 68, 69, 98, 99, 202, 201, 157, 85, 86) %>%
   rename(latitude = decimalLatitude,
          longitude = decimalLongitude) %>%
   arrange(year, month, day)
@@ -295,13 +299,13 @@ cleaned_data <- cleaned_data %>%
 
 The columns selected have been numbered just because I prefer the cleanliness of that to typing all the column names out (and the column numbers were identified using `colnames(data)`), but those correspond to:
 
-|                    |                        |
-|--------------------|------------------------|
-| 68 = year          | 99 = decimalLatitude   |
-| 69 = month         | 100 = decimalLongitude |
-| 70 = day           | 158 = kingdom          |
-| 86 = countryCode   | 202 = speciesKey       |
-| 87 = stateProvince | 203 = species          |
+|                    |                       |
+|--------------------|-----------------------|
+| 67 = year          | 98 = decimalLatitude  |
+| 68 = month         | 99 = decimalLongitude |
+| 79 = day           | 157 = kingdom         |
+| 85 = countryCode   | 201 = speciesKey      |
+| 86 = stateProvince | 202 = species         |
 
 And now we can compare our new data set to the one at the beginning of this section (last two columns omitted so the table can fit):
 
@@ -316,7 +320,8 @@ I think we are done preparing our data for mapping and modeling, let us save the
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 # Save our data as a .csv (cleaned_data.csv) in the data folder (data/)
-write.csv(data, "data/cleaned_data.csv")
+write.csv(cleaned_data, "data/cleaned_data.csv",
+          row.names = FALSE)
 ```
 
 Great! Now our data is ready for analysis and visualizations. The next section in this tutorial will show you how to plot these and create an occurrence map.
