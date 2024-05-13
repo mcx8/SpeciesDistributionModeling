@@ -3,10 +3,10 @@ title: 'Section 1: Acquiring Occurrence Data'
 author: "Maxine Cruz"
 date: "`r format(Sys.time(),'%d %B %Y')`"
 output:
-  pdf_document: default
   html_document:
     theme: readable
     highlight: zenburn
+  pdf_document: default
 ---
 
 Here we will demonstrate how to query, download, and prepare species occurrence data.
