@@ -1,0 +1,209 @@
+---
+title: '04: Predicting Current Distributions - Into the Spatial-verse'
+date: "`r format(Sys.time(),'%d %B %Y')`"
+output:
+  pdf_document: default
+  html_document:
+    theme: readable
+    highlight: zenburn
+---
+
+Here we will learn how to prepare the occurrence data we collected from GBIF for the Maximum Entropy model (MaxEnt). We will also be gathering and preparing climate data from a site called WorldClim. The climate data will be inputted to the model alongside the occurrences in the following section (05) to generate predictions of where our species might currently have suitable habitat.
+
+------------------------------------------------------------------------
+
+### Learning Outcomes
+
+1.  Understand how species distribution models operate and what their purpose is.
+2.  Be able to convert occurrence data coordinates to spatial points.
+3.  Be able to to collect climate data from WorldClim.
+4.  Prepare occurrence data so that sampling bias is reduced.
+
+## Species Distribution Models
+
+Watch a short video on what these models are (which are also called ecological niche models) and how they work:
+
+{{< video sdms_erin_zylstra_2024.mp4 >}}
+
+## Necessary packages
+
+Both parts of Predicting Current Distributions (04 and 05) will require the following R packages to assist:
+
+-   **`dismo`:** Provides methods for predicting the environmental similarity of any site to that of the locations of known occurrences of a species.
+
+-   **`dplyr`:** Helps manipulate and clean our data.
+
+-   **`ENMeval`:** Performs automated tuning and evaluations of species distribution models. That is, there are packages here that help us find the best-fitting model for our species.
+
+-   **`raster`:** Helps manipulate spatial (geographic) data. Examples of this data include elevation surfaces, temperature maps, and land cover maps that are summarized as pixels.
+
+-   **`sp`:** More methods for spatial data, particularly in converting some data into spatial classes.
+
+-   **`terra`:** This is the newer version of `raster`. There are some things that still require or are easier done with `raster` though, which is why both are being used.
+
+In the previous sections, we installed each package individually using `install.packages()`. However, there will be times when you might need to install *several* packages. In those cases it would help to use a built-in function that helps install everything all at once, and that function is `lapply()`.
+
+```{r, eval=FALSE}
+# Install packages (Note: This only needs to be done once!)
+install.packages("dismo")
+install.packages("dplyr")
+install.packages("ENMeval")
+install.packages("raster")
+install.packages("sp")
+install.packages("terra")
+```
+
+Afterwards, let us read these libraries into R so we can use them in the modeling process. In the previous sections, we loaded each package individually using `library()`. However, there will be times when you might need to load *several* packages, just like now. In those cases it would help to use a built-in function that helps install everything all at once, and that function is `lapply()`.
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+# List all the packages we need loaded
+packages_to_load <- c("dismo",
+                      "dplyr",
+                      "ENMeval",
+                      "raster",
+                      "sp",
+                      "terra")
+
+# Load dependencies (all at once!)
+lapply(packages_to_load, library, character.only = TRUE)
+```
+
+Great! Now we have the tools to move forward in this section.
+
+## Part I: Working with Spatial Data
+
+Currently, our occurrence data possesses coordinates -- which are labeled latitude and longitude in our data frame -- but R will read them as Cartesian coordinates (e.g. in the xy plane), as opposed to cartographic coordinates. For spatial analyses, it is important to convert or let R know that these coordinates are tied to specific locations on the Earth's surface. This allows us to connect them to other data related to that area, such as that of climate, land cover, and elevation. It also plots each point at a more realistic distance from each other given the curvature of the Earth.
+
+Let's read-in the data and remind ourselves of the structure:
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+data <- read.csv("data/cleaned_data.csv")
+
+# Data currently has: 389 observations, 10 variables
+```
+
+```{r, message=FALSE, warning=FALSE}
+# View first few rows
+head(data[,1:8], 5)
+```
+
+There are many options for converting Cartesian data into what we will call spatial data. This visual shows a few possibilities depending on the chosen coordinate reference system (CRS), which are ways that the 3-dimensional surface of the Earth are "flattened" into 2-dimensional representations defined by mathematical equations (projection) and where the origin is set (datum).
+
+![](images/crs_projections.jpg)
+
+For this class, we will use the function `SpatialPoints()` from the sp package to help convert the occurrences into spatial data. This function asks for a CRS to apply to the data, which will be +proj=longlat for us. We will not be getting into the fine details of this, but it basically converts our Cartesian coordinates into cartographic coordinates.
+
+The data needs to be reduced to only the latitude and longitude columns in order for `SpatialPoints()` to run smoothly, but that is okay! The other columns in the data are not particularly needed in the modeling process, and we can refer to the data frame if needed. Let us perform the conversion here:
+
+```{r, message=FALSE, warning=FALSE}
+# Reduce the data to only the coordinates
+data_coords <- data %>%
+  select(longitude, latitude)
+
+# Convert species' coordinates to spatial points
+# CRS: Coordinate Reference System
+spatial_data <- SpatialPoints(data_coords,
+                              proj4string = CRS("+proj=longlat"))
+```
+
+In your RStudio Environment, you should see two new objects: `data_coords` and `spatial_data`. This tells us that our functions worked, but in order to ensure they did what we wanted them to do we can click on them. Looking at `data_coords`, you should see that you have your longitude and latitude as well as the same number of observations in the data set we subset from. Similarly, we can confirm the `spatial_data` has the correct number of observations and columns by noticing that the "coords" has a structure of "348 x 2".
+
+## Part II: Preparing Climate Data
+
+We will be using climate data from WorldClim 2.1, which includes monthly data on precipitation (mm), temperature (°C), wind (m s¯¹), solar radiation (kJ m¯² day¯¹), and water vapor pressure (kPa) over the years 1970-2000. There are other sources for climate data (such as PRISM) and WorldClim offers an updated version that extends the data to 2021, but this version is the simplest to use at the moment since the standard 19 [bioclimatic variables](#0){style="font-size: 11pt;"} that are often used in ecological modeling are readily available for download. The 19 bioclimatic variables are the monthly data averaged over 1970-2000, giving us annual trends of the climate in the areas of interest. You might be asking, "Well, what are these 19 variables?". To that I offer this table (which is also provided on the actual WorldClim site):
+
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Variable Code | Description                                                                                                                                                                                                                 |
++===============+=============================================================================================================================================================================================================================+
+| bio1          | Annual Mean Temperature                                                                                                                                                                                                     |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* The average daily mean temperature across all years in the period (1970-2000).                                                                                                                                |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio2          | Mean Diurnal Range                                                                                                                                                                                                          |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* Mean of monthly (maximum temperature - minimum temperature), or the average daily difference in temperature.                                                                                                  |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio3          | Isothermality (bio2/bio7)(×100)                                                                                                                                                                                             |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* How large the daily temperature differences change relative to the annual temperature changes. Or how constant is the temperature?                                                                            |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio4          | Temperature Seasonality (standard deviation ×100)                                                                                                                                                                           |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* Temperature change throughout the year (between months). The variation in month-to-month temperature.                                                                                                         |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio5          | Maximum Temperature of Warmest Month                                                                                                                                                                                        |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they calculated the mean daily temperature of each month, then warmest month is the month with the highest mean daily temperature. The mean for all warmest months across all years is then calculated. |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio6          | Minimum Temperature of Coldest Month                                                                                                                                                                                        |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they calculated the mean daily temperature of each month, then coldest month is the month with the lowest mean daily temperature. The mean for all coldest months across all years is then calculated.  |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio7          | Temperature Annual Range (bio5-bio6)                                                                                                                                                                                        |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* This is the temperature difference between the warmest and coldest months.                                                                                                                                    |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio8          | Mean Temperature of Wettest Quarter of the Year                                                                                                                                                                             |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they found the quarter with the highest precipitation amount, then the mean temperature of all wettest quarters across the years is calculated.                                                         |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio9          | Mean Temperature of Driest Quarter of the Year                                                                                                                                                                              |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they found the quarter with the lowest precipitation amount, then the mean temperature of all driest quarters across the years is calculated.                                                           |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio10         | Mean Temperature of Warmest Quarter of the Year                                                                                                                                                                             |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they found the quarter with the highest average of daily mean temperature, then the mean temperature of all warmest quarters across the years is calculated.                                            |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio11         | Mean Temperature of Coldest Quarter of the Year                                                                                                                                                                             |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they found the quarter with the lowest average of daily mean temperature, then the mean temperature of all coldest quarters across the years is calculated.                                             |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio12         | Annual Precipitation                                                                                                                                                                                                        |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* Average annual sum of precipitation amount.                                                                                                                                                                   |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio13         | Precipitation of Wettest Month                                                                                                                                                                                              |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they calculated the monthly sum of daily precipitation, then wettest month is the month with the highest precipitation amount. The mean for all wettest months across all years is then calculated.     |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio14         | Precipitation of Driest Month                                                                                                                                                                                               |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they calculated the monthly sum of daily precipitation, then driest month is the month with the lowest precipitation amount. The mean for all driest months across all years is then calculated.        |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio15         | Precipitation Seasonality (Coefficient of Variation)                                                                                                                                                                        |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* This is the ratio between the standard deviation and the mean of 12 values representing the monthly average precipitation.                                                                                    |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio16         | Precipitation of Wettest Quarter of the Year                                                                                                                                                                                |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they found the quarter with the highest precipitation amount, then the mean precipitation amount of all wettest quarters across the years is calculated.                                                |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio17         | Precipitation of Driest Quarter of the Year                                                                                                                                                                                 |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they found the quarter with the lowest precipitation amount, then the mean precipitation amount of all driest quarters across the years is calculated.                                                  |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio18         | Precipitation of Warmest Quarter of the Year                                                                                                                                                                                |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they found the quarter with the highest average of daily mean temperature, then the mean precipitation amount of all warmest quarters across the years is calculated.                                   |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bio19         | Precipitation of Coldest Quarter of the Year                                                                                                                                                                                |
+|               |                                                                                                                                                                                                                             |
+|               | *This means:* First they found the quarter with the lowest average of daily mean temperature, then the mean precipitation amount of all coldest quarters across the years is calculated.                                    |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Now that we have a background on the data we will be using here, let's bring it in.
+
+At the site ([WorldClim / Historical Climate Data](https://worldclim.org/data/worldclim21.html)) you will notice that there are different resolutions available shown as "minutes". The larger the number, the lower the resolution will be. Here, we will use the 2.5-minute resolution. If you navigate down to the bioclimatic variables table and [hover]{.underline} over the link to download the data for 2.5-minute climate data, we can see that the file that comes out of this is called "https://geodata.ucdavis.edu/climate/worldclim/2_1/base/wc2.1_2.5m_bio.zip". Assuming a case where others viewed our code and wanted to reproduce it, we can write a line to make the download process reproducible (as opposed to writing out the process, and sometimes people can get lost in the sauce with communication).
+
+## Part III: Preparing Occurrence Points
+
+## Additional Resources
+
+-   Understanding spatial data can be a bit confusing sometimes, but here is a good resource with links to other topics: [Coordinate Reference System and Spatial Projection](https://www.earthdatascience.org/courses/earth-analytics/spatial-data-r/intro-to-coordinate-reference-systems/)
+
+-   More on coordinate reference systems: [A Gentle Introduction to GIS / 8. Coordinate Reference Systems](https://docs.qgis.org/3.34/en/docs/gentle_gis_introduction/coordinate_reference_systems.html)
+
+-   More on WorldClim: [Historical Climate Data](https://worldclim.org/data/worldclim21.html)
+
+-   

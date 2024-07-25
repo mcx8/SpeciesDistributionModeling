@@ -1,0 +1,35 @@
+---
+title: 'Species Status Assessments'
+date: "`r format(Sys.time(),'%d %B %Y')`"
+output:
+  html_document:
+    theme: readable
+    highlight: zenburn
+---
+
+Here we will learn about the Endangered Species Act and how scientists address the needs of wildlife. One way this is done is by
+
+------------------------------------------------------------------------
+
+### Learning Objectives
+
+1.  
+
+------------------------------------------------------------------------
+
+## The Endangered Species Act
+
+------------------------------------------------------------------------
+
+## Additional Resources
+
+-   From the U.S. Fish & Wildlife Service
+    -   Ecological Services Program: <https://www.fws.gov/program/ecological-services>
+    -   Endangered Species Program: <https://www.fws.gov/project/species-status-assessment>
+    -   The Endangered Species Act: <https://www.fws.gov/law/endangered-species-act>
+    -   Species Status Assessments: <https://www.fws.gov/project/species-status-assessment>
+-   
+
+------------------------------------------------------------------------
+
+#### Next Section: \[link to next lesson\]

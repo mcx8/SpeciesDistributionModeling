@@ -1,0 +1,44 @@
+---
+title: '05: Predicting Current Distributions - Readying & Running MaxEnt'
+date: "`r format(Sys.time(),'%d %B %Y')`"
+output:
+  pdf_document: default
+  html_document:
+    theme: readable
+    highlight: zenburn
+---
+
+Here we will learn how to run a MaxEnt model to predict a species' distibution. This is a continuation of the previous lesson (04), where we learned how to prepare the data we collected from GBIF and WorldClim so the data type is compatible with the modeling algorithm.
+
+------------------------------------------------------------------------
+
+### Learning Outcomes
+
+1.  Be able to run a current MaxEnt model.
+2.  Be able to plot a current distribution map.
+3.  Be able to interpret results and deduce the caveats of the model.
+
+## Necessary Packages
+
+As in the first part of Predicting Current Distributions,
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+# List all the packages we need loaded
+packages_to_load <- c("dismo",
+                      "dplyr",
+                      "ENMeval",
+                      "raster",
+                      "sp",
+                      "terra")
+
+# Load dependencies (all at once!)
+lapply(packages_to_load, library, character.only = TRUE)
+```
+
+Now we can get MaxEnt prepared and running!
+
+## Part IV: Preparing Background Points
+
+## Part V: Set-Up for MaxEnt
+
+## Part VI: Run MaxEnt!

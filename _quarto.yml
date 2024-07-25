@@ -1,0 +1,62 @@
+project:
+
+  type: website
+  output-dir: docs
+
+website:
+
+  title: "Applied Data Science"
+  favicon: images/bdsc-logo-hex.png
+  search: false
+  
+  navbar: 
+    logo: images/bdsc-logo-hex.png
+        
+  sidebar:
+      logo: images/bdsc-logo-hex.png
+      background: $blanched-almond
+      align: center 
+      style: docked
+      collapse-level: 1
+      
+      contents:
+        - section: "`README` First!"
+          contents: 
+            - intro.qmd
+        - section: "Applications in Conservation Science"
+          contents: 
+            - spp_status_assessments.qmd
+        - section: "Species Distribution Modelling"
+          contents: 
+            - 01_data_acquisition.qmd
+            - 02_mapping_ggplot2.qmd
+            - 03_mapping_leaflet.qmd
+            - 04_current_sdm_pt1.qmd
+            - 05_current_sdm_pt2.qmd
+        - section: "Drawing Conclusions & Making Decisions"
+        - section: "Resources"
+          contents: 
+            - text: "Contact Us"
+              href: https://github.com/BiodiversityDataScienceCorp
+        
+  page-footer: 
+    background: $dark-blue
+    foreground: $blanched-almond
+    left: "Copyright 2024, University of Arizona | Last modified: 23 June 2024"
+    right: 
+      - href: https://quarto.org/
+        text: "Made with Quarto"
+      - href: https://github.com/BiodiversityDataScienceCorp
+        icon: github
+
+format:
+
+  html:
+    theme:
+      - styles.scss
+    mainfont: "Raleway"
+    toc: true
+    page-layout: full
+  pdf: default
+
+editor: visual

@@ -1,0 +1,74 @@
+/*-- scss:defaults --*/
+
+// Fonts
+
+// Raleway
+// Righteous
+// Vollkorn
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Righteous&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap');
+
+// Colors
+$blanched-almond: #FFEBCD;
+$cornflower-blue: #6495ED;
+$dark-blue: #1E4557;
+$darkest-blue: #0F222B;
+$dark-cyan: #008B8B;
+$dark-olive-green: #39471F;
+$lavender: #5D518A;
+$magenta: #8A1665;
+$olive: #55733D;
+$saddlebrown: #8B4513;
+$slate-grey: #C6E2FF;
+
+// Base document colors
+$navbar-bg: $dark-blue; // navbar (bar at top of page)
+$navbar-fg: $blanched-almond; // navbar foreground (text, etc.)
+$navbar-hl: $slate-grey; // when you hover over navbar stuff
+$page-footer-hl: $slate-grey;
+$link-color: $magenta; // when you hover over buttons
+
+
+
+/*-- scss:rules --*/
+
+// Title, specifically (a.k.a. h1)
+.title {
+  font-family: "Vollkorn";
+  font-size: 45px;
+}
+
+.subtitle {
+  font-family: "Raleway";
+  font-weight: 500;
+}
+
+// Headers
+h1, h2, h3 {
+  font-family: "Vollkorn";
+  color: $darkest-blue;
+}
+
+// Navbar
+.navbar {
+  font-family: "Righteous";
+}
+
+// Sidebar
+.sidebar {
+  font-family: "Raleway";
+  font-weight: 600;
+}
+
+// Body
+body {
+  font-family: "Raleway";
+  color: $dark-blue;
+  font-weight: 500;
+  
+}
+
+// Buttons (e.g. home buttons for email, Github, and Linkedin)
+div.quarto-about-trestles .about-entity .about-link {
+  color: $magenta;
+}
