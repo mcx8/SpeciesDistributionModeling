@@ -1,6 +1,5 @@
 ---
-title: 'Section 3: Mapping Occurrence Data with leaflet'
-author: "Maxine Cruz"
+title: '03: Mapping Occurrence Data with leaflet'
 date: "`r format(Sys.time(),'%d %B %Y')`"
 output:
   html_document:
@@ -13,22 +12,18 @@ Here we will demonstrate how to plot species occurrence data on a leaflet map.
 
 ------------------------------------------------------------------------
 
-### Learning Objectives
+### Learning Outcomes
 
 1.  Be able to plot species occurrence data from GBIF.
 2.  Be able to plot occurrence data using `leaflet`.
 3.  Understand the value of knowing where a species has been observed.
 4.  Understand and practice good file management.
 
-------------------------------------------------------------------------
-
 ## Different Ways of Presenting Data
 
 Sometimes different visualizations may be more suitable for the situation. A `ggplot2` map would be best for static maps that would not require someone to zoom in / out for more information --- which is perfectly fine in our case, but `ggplot2` still has its limitations. We may want to have a topographical map as the base, or a map that shows roads and state / country names. Such features might help visualizing what type of landscape and where an organism has been observed at the most. Attempting to add this kind of base to a `ggplot2` map might pose some challenges and a less-than-ideal map (at least from the amount of searching how-to's I have done), and an easy way to add these features would be through `leaflet`.
 
 The `leaflet` package operates in a similar fashion to `ggplot2`, but uses a pipe (`%>%`) instead of an addition sign (`+`) in layer additions. The functions used here will also be different. Dynamic and interactive maps might be preferred as part of a website or document where the user can do more than view occurrences. For example, there is an option to have each occurrence point on a leaflet map hold information (accessible by clicking on that point). This feature might provide a quick way to view coordinates, the elevation, or other information that would otherwise be found in the data table. Offering the ability for the user to zoom in to areas would be helpful in planning field research to look for that species, or for more large-scale conservation tasks such as advising where construction might be best avoided to preserve habitat.
-
-------------------------------------------------------------------------
 
 ## Necessary packages
 
@@ -59,8 +54,6 @@ library(webshot2)
 ```
 
 Great! Now we have the tools to move forward in this section.
-
-------------------------------------------------------------------------
 
 ## Mapping with `leaflet`
 
@@ -200,18 +193,8 @@ mapshot2(map, file = "output/egybolis_occurrence_map_leaflet.png")
 
 Nice job! To conclude --- here we introduced a different method of mapping and presenting our species' data. Each method has its pros and cons, and sometimes it boils down to how much time you are willing to put in. That statement really only applies if you were to figure out how to code this yourself, which may be the case if you wanted to add features that were not covered in this tutorial.
 
-------------------------------------------------------------------------
-
 ## Additional Resources
 
 -   Want a different base map? There is a leaflet provider testing site so you can check out what each one looks like: [Leaflet Provider Demo](https://leaflet-extras.github.io/leaflet-providers/preview/)
 -   Vignette of leaflet: [Introduction to leaflet](https://rstudio.github.io/leaflet/articles/leaflet.html)
 -   An R Charts guide to leaflet: [Interactive maps with leaflet in R](https://r-charts.com/spatial/interactive-maps-leaflet/)
-
-------------------------------------------------------------------------
-
-#### Next Section: [link to next lesson]
-
-------------------------------------------------------------------------
-
-For questions, comments, or concerns (or even tattoo design requests) please email tmcruz\@arizona.edu.

@@ -1,6 +1,5 @@
 ---
-title: 'Section 1: Acquiring Occurrence Data'
-author: "Maxine Cruz"
+title: '01: Acquiring Occurrence Data'
 date: "`r format(Sys.time(),'%d %B %Y')`"
 output:
   html_document:
@@ -13,17 +12,12 @@ Here we will demonstrate how to query, download, and prepare species occurrence 
 
 ------------------------------------------------------------------------
 
-### Learning Objectives
+### Learning Outcomes
 
 1.  Be able to request and download data from GBIF.
-
 2.  Be able to perform basic data cleaning.
-
 3.  Understand the value of checking intermediate products.
-
 4.  Gain a base understanding of species distribution modeling.
-
-------------------------------------------------------------------------
 
 ## What is Species Distribution Modeling... and Why is it So Important?
 
@@ -32,8 +26,6 @@ Species distribution models (SDMs) are primarily used to gain insights in ecolog
 How realistic a model is would be dependent not only on the method but also the quality of the data. In this part, we will be downloading species occurrence data from the Global Biodiversity Information Facility (GBIF) and preparing it for analysis and visualizations.
 
 We will explore the subject of modeling more in a later section of this tutorial.
-
-------------------------------------------------------------------------
 
 ## Set-Up
 
@@ -110,8 +102,6 @@ Before we get into the data fun, there is one more hoop we need to jump through.
 
 3.  Once the information in #2 has been filled into the .Renviron, save that file and restart R. You can find this under **Session** \> **Restart R** at the top of your window. The restart is necessary to "set" the information to access GBIF through R.
 
-------------------------------------------------------------------------
-
 ## Getting The Data
 
 ### Our Model Species (*insert sparkles*)
@@ -142,7 +132,7 @@ Downloading our moth data from GBIF requires knowing that species' unique identi
 
 This number will be used to pull data from GBIF to R through the function `occ_download()`. The `pred()` function states that we are looking for data where "taxonKey" is equal to 1782645.
 
-```{r, results='hide', message=FALSE, warning=FALSE}
+```{r, eval=FALSE}
 # Request data download from GBIF
 occ_download(pred("taxonKey", 1782645))
 ```
@@ -186,7 +176,7 @@ Citation:
 
 Looking through the print-out, we can see that it directs us towards the next step in this process... importing our data! You might be wondering where our current download went, and to answer that it would be located in the Downloads section of your GBIF account. To get that download into R -- specifically into our data folder -- we will make a small modification to the data retrieval code above, which involves filling in the `path` argument:
 
-```{r, results='hide', message=FALSE, warning=FALSE}
+```{r, eval=FALSE}
 # Place data in data folder, and also in an object called "data"
 data <- occ_download_get('0024905-240216155721649', path = "data/") %>%
   occ_download_import()
@@ -196,7 +186,7 @@ data <- occ_download_get('0024905-240216155721649', path = "data/") %>%
 
 You may notice that we are also storing the data in an object called `data` to the left of `occ_download_get()`, which was done using the `<-` (assignment arrow). This puts our newly downloaded moth data in our R Environment in addition to placing a .zip version of that download in the data folder. To unzip and save it as a .csv, we will run the following line:
 
-```{r, results='hide', message=FALSE, warning=FALSE}
+```{r, eval=FALSE}
 # Save our data as a .csv (raw_data.csv) in the data folder (data/)
 write.csv(data, "data/raw_data.csv",
           row.names = FALSE)
@@ -205,8 +195,6 @@ write.csv(data, "data/raw_data.csv",
 Note that the argument `row.names = FALSE` prevents the addition of a column that numbers the rows. Omitting this argument will add a column called `X` that lists the row number, but this is usually unnecessary since R provides a numbering system that is outside the original data frame.
 
 In any case, now that we have our raw data let us clean it up a bit!
-
-------------------------------------------------------------------------
 
 ## Cleaning The Data
 
@@ -326,18 +314,8 @@ write.csv(cleaned_data, "data/cleaned_data.csv",
 
 Great! Now our data is ready for analysis and visualizations. The next section in this tutorial will show you how to plot these and create an occurrence map.
 
-------------------------------------------------------------------------
-
 ## Additional Resources
 
 -   What exactly is GBIF? You can learn about it here: <https://www.gbif.org/what-is-gbif>
 -   The importance of cleaning big data: [Quantifying the value of user-level data cleaning for big data: A case study using mammal distribution models](https://www.sciencedirect.com/science/article/abs/pii/S1574954116300577?via%3Dihub)
 -   A short paper on SDMs: [Species Distribution Models: Ecological Explanation and Prediction Across Space and Time](https://www.annualreviews.org/doi/10.1146/annurev.ecolsys.110308.120159#:~:text=Species%20distribution%20models%20%28SDMs%29%20are%20numerical%20tools%20that,landscapes%2C%20sometimes%20requiring%20extrapolation%20in%20space%20and%20time.)
-
-------------------------------------------------------------------------
-
-#### Next Section: [link to next lesson]
-
-------------------------------------------------------------------------
-
-For questions, comments, or concerns (or even tattoo design requests) please email tmcruz\@arizona.edu.

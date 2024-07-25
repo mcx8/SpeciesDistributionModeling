@@ -1,6 +1,5 @@
 ---
-title: 'Section 2: Mapping Occurrence Data with ggplot2'
-author: "Maxine Cruz"
+title: '02: Mapping Occurrence Data with ggplot2'
 date: "`r format(Sys.time(),'%d %B %Y')`"
 output:
   pdf_document: default
@@ -13,14 +12,12 @@ Here we will demonstrate how to plot species occurrence data on a ggplot2 map.
 
 ------------------------------------------------------------------------
 
-### Learning Objectives
+### Learning Outcomes
 
 1.  Be able to plot species occurrence data from GBIF.
 2.  Be able to plot occurrence data using `ggplot2`.
 3.  Understand the value of knowing where a species has been observed.
 4.  Understand and practice good file management.
-
-------------------------------------------------------------------------
 
 ## Why Should We Care Where a Species is?
 
@@ -31,8 +28,6 @@ Using citizen science data for research gives us the opportunity to explore area
 You may have gathered from the data acquisition that there are a number of variables that get recorded with an observation, with two of the most important information being the date and location of the observation. Having the date and location for each observation helps us to analyze trends in the data, such as where a species occurs most frequently or how their population numbers have fared over the years. It is difficult to assess where these locations are just by looking at a data table with rows and rows of values, so we visualize the data on a map. A map makes both our and others' lives easier when it comes to interpreting where a species has been observed.
 
 This tutorial will demonstrate two options for mapping. One version will be using `ggplot2`, and the other will use `leaflet`. The former is a static mapping option and creates visualizations by "adding" together different components, whereas the latter is a dynamic and relatively easy way to create more realistic-looking maps. In this section, we will practice plotting using `ggplot2`.
-
-------------------------------------------------------------------------
 
 ## Necessary packages
 
@@ -56,8 +51,6 @@ library(ggplot2)
 
 Great! Now we have the tools to move forward in this section.
 
-------------------------------------------------------------------------
-
 ## Preparing the Data
 
 ### Load Our Data
@@ -78,8 +71,6 @@ head(data[,1:8], 5)
 ```
 
 Note that each observation (or at least a majority of them) has a latitude and longitude. Those coordinates will be used when plotting our occurrence maps. However, if an observation is missing the latitude and/or longitude then those observations will not be plotted --- neither us or R will know what the missing values truly are. We omitted observations with an NA latitude or longitude in the previous section, so that should have been taken care of.
-
-------------------------------------------------------------------------
 
 ## Mapping with `ggplot2`
 
@@ -311,19 +302,9 @@ It is possible to save the map under certain dimensions to fit your needs, but m
 
 Practicing good file management and naming conventions is important for many reasons, one of which being that it makes it easier to find your files in the first place. Here I chose to name the map as "egybolis_occurrence_map.png" which I think is something most people (or me in the distant future!) will be able to decipher if they were to go through my work. The prefix to that, "output/...", places that file in the output folder since this is a product of our manipulations with the data. There are many different ways to organize your files, so do what works best for you!
 
-------------------------------------------------------------------------
-
 ## Additional Resources
 
 -   Best practices for file management: [MIT Communication Lab \| File Structure](https://mitcommlab.mit.edu/broad/commkit/file-structure/)
 -   The `ggplot2` package has a lot of customization settings and visualizations other than a map. Learn more about it here: [Introduction to ggplot2](https://ggplot2.tidyverse.org/articles/ggplot2.html)
 -   R has a sea of color options. You can even make your own! Check out this site: [Colors in R](https://r-charts.com/colors/)
 -   If you are unsure about the accuracy of your map, you can always check the map provided on GBIF for your species. Searching up the species of your choice should give you a visual map of all the occurrences (before any data processing) alongside other information on the organism.
-
-------------------------------------------------------------------------
-
-#### Next Section: [link to next lesson]
-
-------------------------------------------------------------------------
-
-For questions, comments, or concerns (or even tattoo design requests) please email tmcruz\@arizona.edu.
